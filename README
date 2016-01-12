@@ -1,0 +1,12 @@
+This is a C++ test application implementing a very simple stock analyzer.
+
+It uses standard C++ libraries plus Boost for Regex, Unit Testing and some string handling.
+
+It is currently aimed at Linux machines and builds using autoconf - see INSTALL.
+
+Once built and installed, rsST will run all unit tests and rsS will run the analyzer.
+
+It currently just implements a simple loop. Type a command to get the action you want: register a trade or
+view some statistic about a stock or and aggregate value, follow the prompt to enter the required details: stock code,
+price etc, if required.
+

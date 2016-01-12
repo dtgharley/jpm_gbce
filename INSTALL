@@ -1,0 +1,5 @@
+This application has automatic install facilities for Linux type environments using autoconf.
+
+Run bootstrap.sh, configure, make and make install and the commands rsS and rsST for the analyzer
+and test suite respectively should be available in your environment.
+
