@@ -29,32 +29,23 @@ typedef boost::basic_format<char> fstring;
 
 typedef map<string, int> CodeMap;
 
-#define wcvFn withCodeValue
-#define wcvFnM withCodeValueM
-
-#define wcvPt const Stock&
-#define wcvPtM Stock&
-
-#define wcvTemplateDef(FN,PT) template<class T> void FN(T, std::function<fstring(PT, const T&)>)
-
 class RsStocks {
 	friend class RsST;
 public:
-	RsStocks() : is(cin), os(cout) {this->init();};
+	RsStocks() : is(cin), os(cout) {init();};
 	void loop();
 private:
-	RsStocks(istream &i, ostream &o) : is(i), os(o) {this->init();};
+	RsStocks(istream &i, ostream &o) : is(i), os(o) {init();};
 
 	void init();
 	istream &is;
         ostream &os;
 
 	void endlsFmt(const fstring&) const;
-	wcvTemplateDef(wcvFn,wcvPt);
-	wcvTemplateDef(wcvFnM,wcvPtM);
 	bool loop_action();
 	void print_input_message() const;
 	void print_input_prompt() const;
+        template<class T, typename ST> void withCodeValue(T, std::function<fstring(ST, const T&)>);
 	template<class T> T readValues(const string&, const regex&, const regex&, std::function<pair<bool, T>(const smatch&)>, std::function<T ()>) const;
         CodePrice read_stock_price() const;
 	TradeDetails read_trade_details() const;
@@ -96,24 +87,23 @@ template<class T> T RsStocks::readValues(const string& intro_string, const regex
 	} while (ok);
 }
 
-#define LT(T,PT) [this](PT st, const T & ct)
+#define wcvPt const Stock&
+#define wcvPtM Stock&
 
-#define wcvTempCall(FN,CT,CFN,PT) FN<CT>(CFN(), LT(CT,PT)
+#define LT(T,ST) [this](ST st, const T & ct)
+#define wcvTempCall(T,CFN) withCodeValue<T,wcvPt>(CFN(), LT(T,wcvPt)
+#define wcvTempCallM(T,CFN) withCodeValue<T,wcvPtM>(CFN(), LT(T,wcvPtM)
 
-#define ltCodePrice wcvTempCall(wcvFn,CodePrice,read_stock_price,wcvPt)
-#define ltCode wcvTempCall(wcvFn,Code,read_stock_code,wcvPt)
-#define ltTradeDetails wcvTempCall(wcvFnM,TradeDetails,read_trade_details,wcvPtM)
+#define ltCodePrice wcvTempCall(CodePrice,read_stock_price)
+#define ltCode wcvTempCall(Code,read_stock_code)
+#define ltTradeDetails wcvTempCallM(TradeDetails,read_trade_details)
 
-#define wcvTemplate(FN,PT) template<class T> void RsStocks::FN(T ct, std::function<fstring(PT, const T&)>af) { \
-	PT st = stocks.at(ct.code); \
-	if (ct.code != NULL_CODE) { \
-		endlsFmt(af(st, ct)); \
-	} \
+template<class T, typename ST> void RsStocks::withCodeValue(T ct, std::function<fstring(ST, const T&)>af) {
+	ST st = stocks.at(ct.code);
+	if (ct.code != NULL_CODE) {
+		endlsFmt(af(st, ct));
+	}
 }
-
-wcvTemplate(wcvFn,wcvPt)
-
-wcvTemplate(wcvFnM,wcvPtM)
 
 #endif
 
