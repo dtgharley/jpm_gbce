@@ -17,10 +17,10 @@
 #include <boost/format.hpp>
 #include <math.h>
 
-#include "tradeDetails.h"
 #include "stock.h"
 #include "codePrice.h"
 #include "code.h"
+#include "tradeDetails.h"
 
 using namespace std;
 using namespace boost;
@@ -87,12 +87,13 @@ template<class T> T RsStocks::readValues(const string& intro_string, const regex
 	} while (ok);
 }
 
-#define wcvPt const Stock&
-#define wcvPtM Stock&
+#define wcvSt const Stock&
+#define wcvStM Stock&
 
 #define LT(T,ST) [this](ST st, const T & ct)
-#define wcvTempCall(T,CFN) withCodeValue<T,wcvPt>(CFN(), LT(T,wcvPt)
-#define wcvTempCallM(T,CFN) withCodeValue<T,wcvPtM>(CFN(), LT(T,wcvPtM)
+#define wcvTempCallS(T,CFN,ST) withCodeValue<T,ST>(CFN(), LT(T,ST)
+#define wcvTempCall(T,CFN) wcvTempCallS(T,CFN,wcvSt)
+#define wcvTempCallM(T,CFN) wcvTempCallS(T,CFN,wcvStM)
 
 #define ltCodePrice wcvTempCall(CodePrice,read_stock_price)
 #define ltCode wcvTempCall(Code,read_stock_code)
